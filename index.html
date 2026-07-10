@@ -90,11 +90,11 @@
   .question-count,.score{font-size:.9rem;font-weight:800;color:#4a4a4a}
   .progress-track{height:9px;background:#ddd;border-radius:99px;overflow:hidden;margin-bottom:22px}
   .progress-fill{height:100%;width:0;background:var(--orange);transition:width .25s ease}
-  .question{font-size:clamp(1.28rem,3.5vw,1.65rem);line-height:1.32;margin:0 0 18px}
+  .question{font-size:clamp(1.38rem,3.8vw,1.78rem);line-height:1.3;margin:0 0 20px}
   .answers{display:grid;gap:11px}
   .answer{
     width:100%;text-align:left;background:#fff;border:2px solid #ddd;border-radius:11px;
-    padding:14px 15px;cursor:pointer;font-weight:700;line-height:1.3;
+    padding:16px 15px;cursor:pointer;font-weight:700;line-height:1.35;
   }
   .answer:hover,.answer:focus{border-color:var(--orange);background:#fff6ef}
   .answer:disabled{cursor:default}
@@ -116,10 +116,22 @@
   .inning.good{background:var(--green);color:#fff}
   .inning.bad{background:var(--red);color:#fff}
   .result-card{text-align:center}
-  .result-icon{font-size:3rem;margin-bottom:8px}
-  .big-score{font-size:3rem;font-weight:900;color:var(--orange-dark);margin:8px 0}
-  .result-copy{line-height:1.55;color:#3f3f3f;max-width:520px;margin:0 auto 20px}
+  .scoreboard{background:#111;color:#fff;border:6px solid #2a2a2a;border-radius:14px;padding:24px 18px;box-shadow:inset 0 0 0 2px #555,0 12px 26px rgba(0,0,0,.16);max-width:560px;margin:0 auto 20px}
+  .scoreboard-kicker{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:900;color:#ffb07a;margin-bottom:10px}
+  .scoreboard-title{font-size:clamp(1.15rem,3vw,1.45rem);line-height:1.25;margin:0 0 18px}
+  .score-label{font-size:.76rem;letter-spacing:.15em;text-transform:uppercase;color:#cfcfcf;font-weight:800}
+  .big-score{font-family:"Courier New",monospace;font-size:clamp(3.7rem,12vw,6rem);line-height:1;font-weight:900;color:#ff9a57;margin:8px 0 16px;letter-spacing:.03em}
+  .score-divider{width:100%;height:2px;background:repeating-linear-gradient(90deg,#666 0,#666 12px,transparent 12px,transparent 19px);margin:17px 0}
+  .result-card h2{color:#fff;margin-bottom:8px}
+  .result-copy{line-height:1.55;color:#e5e5e5;max-width:470px;margin:0 auto}
   .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .loading-card{text-align:center;padding:30px 0}
+  .loading-title{font-size:1.35rem;font-weight:900;margin-bottom:14px}
+  .baseball-dots{display:flex;justify-content:center;gap:9px}
+  .baseball-dot{width:16px;height:16px;border-radius:50%;background:#fff;border:2px solid #bbb;animation:bounce .8s infinite alternate}
+  .baseball-dot:nth-child(2){animation-delay:.15s}
+  .baseball-dot:nth-child(3){animation-delay:.3s}
+  @keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-8px)}}
   .credit{text-align:center;color:#777;font-size:.75rem;margin-top:24px}
   @media(max-width:520px){
     body{padding:0}
@@ -141,11 +153,6 @@
       <div class="baseball" aria-hidden="true">⚾</div>
       <h2>How well do you remember the Orioles' first half?</h2>
       <p>Test your knowledge of the Orioles' biggest moments, moves and milestones before the All-Star break. Most questions are manageable. A few are built for die-hard Birdland fans.</p>
-      <div class="difficulty">
-        <span class="pill">3 easy</span>
-        <span class="pill">4 medium</span>
-        <span class="pill">3 hard</span>
-      </div>
       <button class="primary" id="start-button">Start quiz</button>
     </div>
 
@@ -162,11 +169,20 @@
       <div class="lineup" id="lineup" aria-label="Question results"></div>
     </div>
 
+    <div class="screen loading-card" id="loading-screen" hidden>
+      <div class="loading-title">Calculating your score...</div>
+      <div class="baseball-dots" aria-hidden="true"><span class="baseball-dot"></span><span class="baseball-dot"></span><span class="baseball-dot"></span></div>
+    </div>
     <div class="screen result-card" id="result-screen" hidden>
-      <div class="result-icon" id="result-icon"></div>
-      <h2 id="result-title"></h2>
-      <div class="big-score" id="final-score"></div>
-      <p class="result-copy" id="result-copy"></p>
+      <div class="scoreboard">
+        <div class="scoreboard-kicker" id="scoreboard-kicker">FINAL</div>
+        <div class="scoreboard-title">The Baltimore Sun's first half Orioles quiz</div>
+        <div class="score-label">Your score</div>
+        <div class="big-score" id="final-score">0/10</div>
+        <div class="score-divider"></div>
+        <h2 id="result-title"></h2>
+        <p class="result-copy" id="result-copy"></p>
+      </div>
       <div class="actions">
         <button class="primary" id="copy-button">Share my score</button>
         <button class="secondary" id="restart-button">Play again</button>
@@ -186,82 +202,23 @@
 */
 
 const QUESTIONS = [
-  {
-    difficulty:"Easy",
-    question:"Who was the Orioles’ opening day starting pitcher in 2026?",
-    answers:["Kyle Bradish","Trevor Rogers","Shane Baz","Dean Kremer"],
-    correct:1,
-    explanation:"Trevor Rogers received the opening day assignment and threw seven scoreless innings against Minnesota."
-  },
-  {
-    difficulty:"Easy",
-    question:"Which slugging first baseman joined the Orioles before the 2026 season?",
-    answers:["Pete Alonso","Vladimir Guerrero Jr.","Rhys Hoskins","Josh Naylor"],
-    correct:0,
-    explanation:"Pete Alonso signed with Baltimore during the offseason and became a central figure in the Orioles’ lineup."
-  },
-  {
-    difficulty:"Easy",
-    question:"Which player did the Orioles trade to the Angels to acquire Taylor Ward?",
-    answers:["Heston Kjerstad","Grayson Rodriguez","Jackson Holliday","Cade Povich"],
-    correct:1,
-    explanation:"Baltimore acquired Taylor Ward from the Angels in exchange for right-hander Grayson Rodriguez."
-  },
-  {
-    difficulty:"Medium",
-    question:"Who delivered the walk-off hit to complete the Orioles’ five-run ninth-inning rally against Toronto?",
-    answers:["Adley Rutschman","Pete Alonso","Taylor Ward","Gunnar Henderson"],
-    correct:1,
-    explanation:"Pete Alonso capped the comeback with a walk-off RBI single in Baltimore’s 6-5 victory."
-  },
-  {
-    difficulty:"Medium",
-    question:"Which Oriole hit walk-off home runs on consecutive days in May?",
-    answers:["Colton Cowser","Gunnar Henderson","Samuel Basallo","Coby Mayo"],
-    correct:0,
-    explanation:"Colton Cowser became the second player in Orioles history since 1954 to hit a walk-off homer on consecutive days."
-  },
-  {
-    difficulty:"Medium",
-    question:"Which young catcher developed a particularly strong first-half partnership with Trevor Rogers?",
-    answers:["Adley Rutschman","Samuel Basallo","Alex Jackson","Maverick Handley"],
-    correct:1,
-    explanation:"Samuel Basallo caught Rogers more often than any other Orioles starter and drew praise for his work behind the plate."
-  },
-  {
-    difficulty:"Medium",
-    question:"Which Orioles pitcher signed the largest pitching contract in franchise history?",
-    answers:["Shane Baz","Trevor Rogers","Kyle Bradish","Ryan Helsley"],
-    correct:0,
-    explanation:"Shane Baz signed the largest pitching contract in Orioles history shortly before Opening Day."
-  },
-  {
-    difficulty:"Hard",
-    question:"The Orioles acquired Blaze Alexander from Arizona before the season. Which relief pitcher did Baltimore trade to the Diamondbacks?",
-    answers:["Bryan Baker","Kade Strowd","Yennier Cano","Nick Vespi"],
-    correct:1,
-    explanation:"Kade Strowd was the major league reliever included in the package Baltimore sent to Arizona."
-  },
-  {
-    difficulty:"Hard",
-    question:"Which Orioles pitcher earned the team’s first save of the 2026 season?",
-    answers:["Ryan Helsley","Yennier Cano","Félix Bautista","Keegan Akin"],
-    correct:0,
-    explanation:"Ryan Helsley recorded Baltimore’s first save of the season."
-  },
-  {
-    difficulty:"Hard",
-    question:"How many different pitchers started a game for the Orioles before the 2026 All-Star break?",
-    answers:["9","11","13","15"],
-    correct:1,
-    explanation:"This is the quiz’s final-boss question. Update the answer and explanation after the final game before the All-Star break."
-  }
+  {question:"Who was the Orioles’ opening day starting pitcher in 2026?",answers:["Kyle Bradish","Trevor Rogers","Shane Baz","Dean Kremer"],correct:1,explanation:"Trevor Rogers received the opening day assignment and threw seven scoreless innings against Minnesota."},
+  {question:"Which of the following players was on the Orioles’ 2026 opening day roster?",answers:["Yaramil Hiraldo","Dean Kremer","Albert Suárez","Keegan Akin"],correct:0,explanation:"Yaramil Hiraldo earned one of the Orioles’ final bullpen spots out of spring training."},
+  {question:"Who led the Orioles in stolen bases at the all-star break?",answers:["Gunnar Henderson","Colton Cowser","Blaze Alexander","Leody Taveras"],correct:3,explanation:"Leody Taveras led Baltimore in stolen bases during the first half."},
+  {question:"Who delivered the walk-off hit to complete the Orioles’ five-run ninth-inning rally against Toronto?",answers:["Adley Rutschman","Pete Alonso","Taylor Ward","Gunnar Henderson"],correct:1,explanation:"Pete Alonso capped the comeback with a walk-off RBI single in Baltimore’s 6-5 victory."},
+  {question:"Which Oriole hit walk-off home runs on consecutive days in May?",answers:["Colton Cowser","Gunnar Henderson","Samuel Basallo","Coby Mayo"],correct:0,explanation:"Colton Cowser became the second player in Orioles history since 1954 to hit a walk-off homer on consecutive days."},
+  {question:"Which young catcher developed a particularly strong first-half partnership with Trevor Rogers?",answers:["Adley Rutschman","Samuel Basallo","Alex Jackson","Maverick Handley"],correct:1,explanation:"Samuel Basallo caught Rogers more often than any other Orioles starter and drew praise for his work behind the plate."},
+  {question:"Which Orioles pitcher signed the largest pitching contract in franchise history?",answers:["Shane Baz","Trevor Rogers","Kyle Bradish","Ryan Helsley"],correct:0,explanation:"Shane Baz signed the largest pitching contract in Orioles history shortly before opening day."},
+  {question:"The Orioles acquired Blaze Alexander from Arizona before the season. Which relief pitcher did Baltimore trade to the Diamondbacks?",answers:["Bryan Baker","Kade Strowd","Yennier Cano","Nick Vespi"],correct:1,explanation:"Kade Strowd was the major league reliever included in the package Baltimore sent to Arizona."},
+  {question:"Which Orioles pitcher earned the team’s first save of the 2026 season?",answers:["Ryan Helsley","Yennier Cano","Félix Bautista","Keegan Akin"],correct:0,explanation:"Ryan Helsley recorded Baltimore’s first save of the season."},
+  {question:"How many different pitchers started a game for the Orioles before the 2026 all-star break?",answers:["9","11","13","15"],correct:1,explanation:"This total should be verified after the Orioles’ final game before the all-star break."}
 ];
 
 const $ = (id) => document.getElementById(id);
 const startScreen = $("start-screen");
 const quizScreen = $("quiz-screen");
 const resultScreen = $("result-screen");
+const loadingScreen = $("loading-screen");
 const answersEl = $("answers");
 const feedbackEl = $("feedback");
 const nextButton = $("next-button");
@@ -289,6 +246,7 @@ function beginQuiz(){
   results = [];
   startScreen.hidden = true;
   resultScreen.hidden = true;
+  loadingScreen.hidden = true;
   quizScreen.hidden = false;
   renderLineup();
   showQuestion();
@@ -301,7 +259,7 @@ function showQuestion(){
   answersEl.innerHTML = "";
 
   const item = order[index];
-  $("question-count").textContent = `Question ${index+1} of ${order.length} · ${item.difficulty}`;
+  $("question-count").textContent = `Question ${index+1} of ${order.length}`;
   $("score-display").textContent = `Score: ${score}`;
   $("progress-fill").style.width = `${(index/order.length)*100}%`;
   $("question-text").textContent = item.question;
@@ -370,27 +328,31 @@ function renderLineup(){
 
 function finish(){
   quizScreen.hidden=true;
-  resultScreen.hidden=false;
-  let title,icon,copy;
-  if(score===10){
-    [title,icon,copy]=["Birdland Historian","🏆","You didn’t miss a thing. That is a perfect first-half performance."];
-  }else if(score>=8){
-    [title,icon,copy]=["Camden Yards Regular","🔥","You clearly watched a lot of Orioles baseball. Only the toughest details got past you."];
-  }else if(score>=6){
-    [title,icon,copy]=["Everyday Fan","⚾","A solid showing. You knew the big moments, even if a few games slipped through the cracks."];
-  }else if(score>=4){
-    [title,icon,copy]=["Box Score Checker","🧢","You caught the main storylines, but the All-Star break offers a chance to brush up."];
-  }else{
-    [title,icon,copy]=["Spring Training Mode","😅","A rough first half — but there’s plenty of season left for a comeback."];
-  }
-  $("result-icon").textContent=icon;
-  $("result-title").textContent=title;
-  $("final-score").textContent=`${score}/10`;
-  $("result-copy").textContent=copy;
+  resultScreen.hidden=true;
+  loadingScreen.hidden=false;
+  setTimeout(()=>{
+    loadingScreen.hidden=true;
+    resultScreen.hidden=false;
+    let title,copy,kicker;
+    if(score===10){[title,copy,kicker]=["Perfect Game","You didn’t miss a thing. That is a perfect first-half performance.","⚾ PERFECT GAME ⚾"];}
+    else if(score>=8){[title,copy,kicker]=["Camden Yards Regular","You clearly watched a lot of Orioles baseball. Only the toughest details got past you.","FINAL"];}
+    else if(score>=6){[title,copy,kicker]=["Everyday Fan","A solid showing. You knew the big moments, even if a few games slipped through the cracks.","FINAL"];}
+    else if(score>=4){[title,copy,kicker]=["Box Score Checker","You caught the main storylines, but the all-star break offers a chance to brush up.","FINAL"];}
+    else{[title,copy,kicker]=["Spring Training Mode","A rough first half — but there’s plenty of season left for a comeback.","FINAL"];}
+    $("scoreboard-kicker").textContent=kicker;
+    $("result-title").textContent=title;
+    $("result-copy").textContent=copy;
+    animateScore(score);
+  },750);
+}
+function animateScore(target){
+  const scoreEl=$("final-score");let current=0;scoreEl.textContent=`0/10`;if(target===0)return;
+  const step=Math.max(45,Math.floor(800/target));
+  const timer=setInterval(()=>{current++;scoreEl.textContent=`${current}/10`;if(current>=target)clearInterval(timer);},step);
 }
 
 async function shareScore(){
-  const text=`⚾ I scored ${score}/10 on The Baltimore Sun's first half Orioles quiz. Can you beat me?`;
+  const text=score===10 ? `⚾ PERFECT GAME: I scored 10/10 on The Baltimore Sun's first half Orioles quiz.` : `⚾ I scored ${score}/10 on The Baltimore Sun's first half Orioles quiz. Can you beat me?`;
   const button=$("copy-button");
 
   try{
