@@ -204,14 +204,14 @@
 const QUESTIONS = [
   {question:"Who was the Orioles’ opening day starting pitcher in 2026?",answers:["Kyle Bradish","Trevor Rogers","Shane Baz","Dean Kremer"],correct:1,explanation:"Trevor Rogers received the opening day assignment and threw seven scoreless innings against Minnesota."},
   {question:"Which of the following players was on the Orioles’ 2026 opening day roster?",answers:["Yaramil Hiraldo","Dean Kremer","Albert Suárez","Keegan Akin"],correct:0,explanation:"Yaramil Hiraldo earned one of the Orioles’ final bullpen spots out of spring training."},
-  {question:"Who led the Orioles in stolen bases at the all-star break?",answers:["Gunnar Henderson","Colton Cowser","Blaze Alexander","Leody Taveras"],correct:3,explanation:"Leody Taveras led Baltimore in stolen bases during the first half."},
+  {question:"Who led the Orioles in stolen bases at the All-Star break?",answers:["Gunnar Henderson","Colton Cowser","Blaze Alexander","Leody Taveras"],correct:3,explanation:"Leody Taveras led Baltimore in stolen bases during the first half."},
   {question:"Who delivered the walk-off hit to complete the Orioles’ five-run ninth-inning rally against Toronto?",answers:["Adley Rutschman","Pete Alonso","Taylor Ward","Gunnar Henderson"],correct:1,explanation:"Pete Alonso capped the comeback with a walk-off RBI single in Baltimore’s 6-5 victory."},
   {question:"Which Oriole hit walk-off home runs on consecutive days in May?",answers:["Colton Cowser","Gunnar Henderson","Samuel Basallo","Coby Mayo"],correct:0,explanation:"Colton Cowser became the second player in Orioles history since 1954 to hit a walk-off homer on consecutive days."},
   {question:"Which young catcher developed a particularly strong first-half partnership with Trevor Rogers?",answers:["Adley Rutschman","Samuel Basallo","Alex Jackson","Maverick Handley"],correct:1,explanation:"Samuel Basallo caught Rogers more often than any other Orioles starter and drew praise for his work behind the plate."},
   {question:"Which Orioles pitcher signed the largest pitching contract in franchise history?",answers:["Shane Baz","Trevor Rogers","Kyle Bradish","Ryan Helsley"],correct:0,explanation:"Shane Baz signed the largest pitching contract in Orioles history shortly before opening day."},
   {question:"The Orioles acquired Blaze Alexander from Arizona before the season. Which relief pitcher did Baltimore trade to the Diamondbacks?",answers:["Bryan Baker","Kade Strowd","Yennier Cano","Nick Vespi"],correct:1,explanation:"Kade Strowd was the major league reliever included in the package Baltimore sent to Arizona."},
   {question:"Which Orioles pitcher earned the team’s first save of the 2026 season?",answers:["Ryan Helsley","Yennier Cano","Félix Bautista","Keegan Akin"],correct:0,explanation:"Ryan Helsley recorded Baltimore’s first save of the season."},
-  {question:"How many different pitchers started a game for the Orioles before the 2026 all-star break?",answers:["9","11","13","15"],correct:1,explanation:"This total should be verified after the Orioles’ final game before the all-star break."}
+  {question:"How many different pitchers started a game for the Orioles before the 2026 All-Star break?",answers:["9","10","13","15"],correct:1,explanation:"Ten different pitchers have started for the Orioles this season."}
 ];
 
 const $ = (id) => document.getElementById(id);
@@ -337,7 +337,7 @@ function finish(){
     if(score===10){[title,copy,kicker]=["Perfect Game","You didn’t miss a thing. That is a perfect first-half performance.","⚾ PERFECT GAME ⚾"];}
     else if(score>=8){[title,copy,kicker]=["Camden Yards Regular","You clearly watched a lot of Orioles baseball. Only the toughest details got past you.","FINAL"];}
     else if(score>=6){[title,copy,kicker]=["Everyday Fan","A solid showing. You knew the big moments, even if a few games slipped through the cracks.","FINAL"];}
-    else if(score>=4){[title,copy,kicker]=["Box Score Checker","You caught the main storylines, but the all-star break offers a chance to brush up.","FINAL"];}
+    else if(score>=4){[title,copy,kicker]=["Box Score Checker","You caught the main storylines, but the All-Star break offers a chance to brush up.","FINAL"];}
     else{[title,copy,kicker]=["Spring Training Mode","A rough first half — but there’s plenty of season left for a comeback.","FINAL"];}
     $("scoreboard-kicker").textContent=kicker;
     $("result-title").textContent=title;
